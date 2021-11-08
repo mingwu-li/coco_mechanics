@@ -15,7 +15,7 @@ J = zeros(2*n,nt);
 assert(~isempty(obj.system.fext), 'no external forcing');
 fext_coeffs = obj.system.fext.coeffs(:,1);
 Jt = -2*fext_coeffs.*(ep.*obj.system.fext.kappas(1).*om.*sin(obj.system.fext.kappas(1)*om.*t+th));
-J(n+1:2*n,:) = Jt;
+J(n+1:2*n,:) = obj.system.M\Jt;
 
 % finite difference
 % [m, n] = size(z);

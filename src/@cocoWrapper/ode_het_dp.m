@@ -13,13 +13,13 @@ th = p(3,:);
 J = zeros(2*n,3,nt);
 % external forcing
 assert(~isempty(obj.system.fext), 'no external forcing');
-fext_coeffs = obj.system.fext.coeffs(:,1);
+fext_coeffs = obj.system.M\obj.system.fext.coeffs(:,1);
 Jom = -2*fext_coeffs.*(ep.*obj.system.fext.kappas(1).*t.*sin(obj.system.fext.kappas(1)*om.*t+th));
 Jep = 2*fext_coeffs.*cos(obj.system.fext.kappas(1)*om.*t+th);
 Jth = -2*fext_coeffs.*(ep.*sin(obj.system.fext.kappas(1)*om.*t+th));
-J(n+1:2*n,1,:) = reshape(Jom,[n,1,nt]);
-J(n+1:2*n,2,:) = reshape(Jep,[n,1,nt]);
-J(n+1:2*n,3,:) = reshape(Jth,[n,1,nt]);
+J(n+1:2*n,1,:) = reshape(full(Jom),[n,1,nt]);
+J(n+1:2*n,2,:) = reshape(full(Jep),[n,1,nt]);
+J(n+1:2*n,3,:) = reshape(full(Jth),[n,1,nt]);
 
 % finite difference
 % f  = @(x,p) obj.ode_het(x(1,:), x(2:end,:), p, data);

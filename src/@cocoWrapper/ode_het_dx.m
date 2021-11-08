@@ -41,6 +41,6 @@ J = J1 + [zeros(n,2*n,nt); -J2];
 % tp = [ t ; p ];
 % Jx = coco_ezDFDX('f(x,p)v', f, z, tp);
 % dJ = J-Jx;
-% norm(dJ(:),'inf')
+% norm(dJ(:),'inf')/norm(J(:),'inf')
 
 end
