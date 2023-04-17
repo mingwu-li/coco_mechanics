@@ -29,16 +29,17 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
         fext = []
         Fext = []
         Omega = []
+        dfnldx  = []
+        dfnldxd = []
         
         n                   % dimension for x
         N                   % dimension for z
-        order = [];         % whether second-order or first-order system
+        order = []          % whether second-order or first-order system
         degree              % degree of (polynomial) nonlinearity of the rhs of the dynamical system
         nKappa              % Fourier Series expansion order for Fext
-        velDepNon           % velociety dependent nonlinearity (true/false)
         
         spectrum = []       % data structure constructed by linear_spectral_analysis method
-
+        Options = DSOptions()
     end
     
     methods
@@ -157,7 +158,7 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
                 Fext = obj.Fext;
             elseif obj.order == 2
                 Fext.kappas = obj.fext.kappas;
-                nKappas = size(Fext.kappas,1);
+                nKappas     = size(Fext.kappas,1);
                 Fext.coeffs = [obj.fext.coeffs; 
                               sparse(obj.n, nKappas)];
                 Fext.epsilon = obj.fext.epsilon;
@@ -169,18 +170,6 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
             if ~isempty(obj.A)
                 degree = length(obj.F);
             end
-        end
-        
-        function velDepNon = get.velDepNon(obj)
-            velDepNon = false;
-            d = length(obj.fnl);
-            for j=1:d
-                dimf = size(obj.fnl{j});
-                if dimf==obj.N
-                    velDepNon = true;
-                    return;
-                end
-            end    
         end
         
         %% other methods
@@ -199,11 +188,11 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
         
         fext = compute_fext(obj,t)
         Fext = evaluate_Fext(obj,t)
-        fnl = compute_fnl(obj,x,xd)
+        fnl  = compute_fnl(obj,x,xd)
         dfnl = compute_dfnldx(obj,x,xd)
         dfnl = compute_dfnldxd(obj,x,xd)
-        Fnl = evaluate_Fnl(obj,z)
-        f = odefun(obj,t,z)
+        Fnl  = evaluate_Fnl(obj,z)
+        f    = odefun(obj,t,z)
         [r, drdqdd,drdqd,drdq, c0] = residual(obj, q, qd, qdd, t)
     end
 end

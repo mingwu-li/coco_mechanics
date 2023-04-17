@@ -6,19 +6,24 @@ function y = ode_aut(obj, z, p, data)
 % system without damping. If the system has other symmetries, this
 % implementation will fail.
 
+if strcmp(obj.system.Options.notation
+    case 'tensor'
+
 if isempty(data)
     error('a data structure with fnl field should be given');
 else
-    n = obj.system.n;
-    nt = size(z,2);
-    x  = z(1:n,:); 
-    xd = z(n+1:2*n,:);
 
-    % linear part
-    y1x = xd;
-    y1d = obj.system.K*x+repmat(p(1,:),[n,1]).*(obj.system.C*xd); % Kx+Cv
+n = obj.system.n;
+nt = size(z,2);
+x  = z(1:n,:); 
+xd = z(n+1:2*n,:);
 
-    % nonlinear part
+% linear part
+y1x = xd;
+y1d = obj.system.K*x+repmat(p(1,:),[n,1]).*(obj.system.C*xd); % Kx+Cv
+
+% nonlinear part
+if isfield(data,'fnl')
     fnl = data.fnl; % fnl.coeffs and fnl.ind
     numNonlinearTerms = size(fnl.coeffs,2);
     y2 = 0;
@@ -34,7 +39,11 @@ else
         s = repmat(s, [n, 1]);
         y2 = y2+coeff.*s;
     end
-    y2 = repmat(p(2,:),[n,1]).*y2;
-    y = [y1x; -obj.system.M\(y1d+y2)];
+else
+    y2 = obj.system.compute_fnl(x,xd);
+end
+
+y2 = repmat(p(2,:),[n,1]).*y2;
+y  = [y1x; -obj.system.M\(y1d+y2)];
 end
 end

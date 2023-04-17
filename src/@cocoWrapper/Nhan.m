@@ -13,20 +13,4 @@ function y = Nhan(obj,u,v)
 
 y = obj.system.C*v+obj.system.K*u+obj.system.compute_fnl(u,v);
 
-% y = obj.system.C*v+obj.system.K*u;
-% another version for compute_dfnldx
-% fnl = obj.multiFnl; % fnl.coeffs and fnl.ind
-% numNonlinearTerms = size(fnl.coeffs,2);
-% for i=1:numNonlinearTerms
-%     coeff = fnl.coeffs(:,i);
-%     ind = fnl.ind(i,:);
-%     % find nonzero exponents
-%     expind = find(ind);
-%     s = 1;
-%     for j=1:numel(expind)
-%         s = s.*u(expind(j),:).^ind(expind(j));
-%     end
-%     y = y+coeff*s;
-% end
-
 end

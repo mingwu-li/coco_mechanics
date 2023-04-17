@@ -5,15 +5,26 @@ function fnl = compute_fnl(obj,x,xd)
 
 assert(obj.order == 2, ' fnl can only be computed for second-order systems')
 
-if obj.velDepNon
-    fnl = zeros(obj.N,1);
-    for j = 1:length(obj.fnl)
-        fnl = fnl + expand_tensor(obj.fnl{j},[x(:);xd(:)]);
-    end 
-    fnl = fnl(1:obj.n);
-else
-    fnl = zeros(obj.n,1);
-    for j = 1:length(obj.fnl)
-        fnl = fnl + expand_tensor(obj.fnl{j},x);
-    end
+switch obj.Options.notation
+    case 'tensor'
+        if obj.Options.velDepNon
+            fnl = zeros(obj.N,1);
+            for j = 1:length(obj.fnl)
+                fnl = fnl + expand_tensor(obj.fnl{j},[x(:);xd(:)]);
+            end 
+            fnl = fnl(1:obj.n);
+        else
+            fnl = zeros(obj.n,1);
+            for j = 1:length(obj.fnl)
+                fnl = fnl + expand_tensor(obj.fnl{j},x);
+            end
+        end
+    case 'fun_handle'
+        if obj.Options.velDepNon
+            fnl = obj.fnl(x);
+        else
+            fnl = obj.fnl(x,xd);
+        end
+    otherwise
+        error('notation should be tensor or fun_handle');
 end

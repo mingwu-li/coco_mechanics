@@ -15,6 +15,8 @@ switch obj.order
                 for j = 2:degree
                     Fnl = Fnl + expand_multiindex(obj.F{j},z);
                 end
+            case 'fun_handle'
+                Fnl = obj.F(z);
         end
         
     case 2

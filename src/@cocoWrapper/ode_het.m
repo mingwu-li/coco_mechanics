@@ -17,17 +17,23 @@ else
     y1 = obj.system.BinvA*z;
 
     % nonlinear part
-    fnl = data.fnl; % fnl.coeffs and fnl.ind
-    numNonlinearTerms = size(fnl.coeffs,2);
-    y2 = 0;
-    for i=1:numNonlinearTerms
-        coeff = repmat(fnl.coeffs(:,i),[1, nt]);
-        ind = fnl.ind(i,:)';
-        % find nonzero exponents
-        expind = find(ind);
-        s = prod(z(expind,:).^ind(expind),1);    
-        s = repmat(s, [n, 1]);    
-        y2 = y2+coeff.*s;
+    if isfield(data,'fnl')
+        fnl = data.fnl; % fnl.coeffs and fnl.ind
+        numNonlinearTerms = size(fnl.coeffs,2);
+        y2 = 0;
+        for i=1:numNonlinearTerms
+            coeff = repmat(fnl.coeffs(:,i),[1, nt]);
+            ind = fnl.ind(i,:)';
+            % find nonzero exponents
+            expind = find(ind);
+            s = prod(z(expind,:).^ind(expind),1);    
+            s = repmat(s, [n, 1]);    
+            y2 = y2+coeff.*s;
+        end
+    else
+        x  = z(1:n,:); 
+        xd = z(n+1:2*n,:);
+        y2 = obj.system.compute_fnl(x,xd);
     end
     
     % external forcing
