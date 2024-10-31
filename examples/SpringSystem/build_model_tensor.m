@@ -1,4 +1,4 @@
-function [mass,damp,stiff,fnl,fext] = build_model()
+function [mass,damp,stiff,fnl,fext] = build_model_tensor()
 
 n   = 2;
 om1 = 2;
