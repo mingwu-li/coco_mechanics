@@ -24,20 +24,21 @@ T       = 2*pi/omega0*obj.periodsRatio;
 tf      = obj.nCycles*T;
 outdof  = obj.outdof;
 epsilon = obj.system.fext.epsilon;
-obj.fnlTensor2Multi(); % convert nonlinear force from Tensor to Multiindex
-p0 = [omega0;epsilon];
-
-if ~isempty(obj.system.Omega)
-    assert(numel(obj.system.Omega)==1, 'coco run assumes single freq component');
-end
-assert(obj.system.order == 2, 'fnl avaliable only for second-order systems')
-for i=1:numel(obj.system.fnl)
-    fnli = obj.system.fnl{i};
-    if ~isempty(fnli)
-        assert(size(fnli,2)==n, 'current implementation assumes f(x) instead of f(x,xd)');
+if strcmp(obj.system.Options.notation,'tensor')
+    obj.fnlTensor2Multi(); % convert nonlinear force from Tensor to Multiindex 
+    assert(obj.system.order == 2, 'fnl avaliable only for second-order systems')
+    for i=1:numel(obj.system.fnl)
+        fnli = obj.system.fnl{i};
+        if ~isempty(fnli)
+            assert(size(fnli,2)==n, 'current implementation assumes f(x) instead of f(x,xd)');
+        end
     end
 end
 
+p0 = [omega0;epsilon];
+if ~isempty(obj.system.Omega)
+    assert(numel(obj.system.Omega)==1, 'coco run assumes single freq component');
+end
 opts = struct();
 opts.ItMX   = obj.Options.IntItMX;
 opts.RelTol = obj.Options.RelTol;

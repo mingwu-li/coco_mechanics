@@ -22,5 +22,9 @@ switch obj.Options.notation
         end
 
     case 'fun_handle'
-        dfnl = obj.system.dfnldx(x,xd); % the function is not avaliable yet
+        if obj.Options.velDepNon
+            dfnl = obj.dfnldx(x,xd); 
+        else
+            dfnl = obj.dfnldx(x);
+        end
 end

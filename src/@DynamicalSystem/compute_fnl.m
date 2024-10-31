@@ -21,9 +21,9 @@ switch obj.Options.notation
         end
     case 'fun_handle'
         if obj.Options.velDepNon
-            fnl = obj.fnl(x);
-        else
             fnl = obj.fnl(x,xd);
+        else
+            fnl = obj.fnl(x);
         end
     otherwise
         error('notation should be tensor or fun_handle');
